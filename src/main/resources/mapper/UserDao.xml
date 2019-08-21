@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.t1.dao.UserDao">
+    <resultMap id="user" type="com.neu.t1.po.User">
+        <id column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="pwd" property="password"/>
+        <result column="rel_name" property="relname"/>
+        <result column="user_type" property="userType"/>
+        <result column="title_id" property="titleId"/>
+        <result column="scheduling" property="scheduling"/>
+        <result column="dep_no" property="depNo"/>
+        <result column="reg_lev" property="regLev"/>
+        <result column="tag" property="tag"/>
+    </resultMap>
+
+    <select id="getByUsername" resultMap="user">
+        SELECT * FROM tt.user WHERE user_name=#{username}
+    </select>
+
+</mapper>

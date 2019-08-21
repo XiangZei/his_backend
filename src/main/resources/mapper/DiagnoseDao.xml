@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.t1.dao.DiagnoseDao">
+
+    <select id="getPatientList" resultType="java.util.Map">
+        SELECT regist_id registid,medical_record_no medicalrecordid,name,age,(SELECT const_name FROM tt.const_item WHERE const_id=gender) gender,diagnose_state diagnosestate FROM tt.regist_msg WHERE doc_id=(
+          SELECT user_id FROM tt.user WHERE user_name=#{docName}
+            ) and (diagnose_state=1 or diagnose_state=2 or diagnose_state=4)
+    </select>
+
+    <insert id="submitMedicalMainPage">
+        INSERT INTO tt.medical_record_homepage VALUES(#{mainPage.medicalrecordid},#{mainPage.registid},#{mainPage.chiefcomplaint},#{mainPage.histofpresill},#{mainPage.treatofpresill},#{mainPage.pasthist},#{mainPage.allergichist},#{mainPage.physicalexamination},#{mainPage.examsuggestion},#{mainPage.attention},'','','',2)
+    </insert>
+
+    <update id="changeStatus">
+        UPDATE tt.regist_msg SET diagnose_state=2 WHERE regist_id=#{registid}
+    </update>
+
+    <select id="getMaxPrescriptionID" resultType="Integer">
+        SELECT MAX(prescription_id)+1 FROM tt.prescription
+    </select>
+
+    <insert id="addPrescription">
+        INSERT INTO tt.prescription VALUES(#{prescription.prescriptionid},#{prescription.medicalrecordid},#{prescription.registid},#{prescription.doc},#{prescription.medicalrecordname},#{prescription.createtime},#{prescription.status})
+    </insert>
+
+    <insert id="filldetail">
+        INSERT INTO tt.`prescription_detail`(`prescription_id`, `drug_id`, `usage`, `use_level`, `freq`, `num`, `status`) VALUES
+                                             (#{prescriptiondetail.prescriptionid}, #{prescriptiondetail.drugid},#{prescriptiondetail.usage}, #{prescriptiondetail.uselevel}, #{prescriptiondetail.freq},#{prescriptiondetail.num},#{prescriptiondetail.status});
+    </insert>
+
+    <update id="cancel">
+        UPDATE tt.prescription SET status=#{cancel.status} WHERE medical_record_name=#{cancel.prescriptionname} AND regist_id=#{cancel.registid} AND medical_record_id=#{cancel.medicalrecordid}
+    </update>
+
+    <select id="searchdrug" resultType="com.neu.t1.po.DrugPO">
+        SELECT drug_id drugid,drug_name drugname,durg_std drugstd,fee drugfee ,code FROM tt.drug
+        <where>
+            <if test="code != null">
+                code like "%"#{code}"%"
+            </if>
+        </where>
+    </select>
+
+    <select id="getDocID" resultType="Integer">
+        SELECT user_id FROM tt.user WHERE user_name=#{docname} AND tag=1
+    </select>
+
+    <select id="getPrescriptionTemplateList" resultType="com.neu.t1.po.PrescriptionTemplate">
+        SELECT `﻿presrciption_template_id` prescriptiontemplateid,name name,scope scope FROM tt.prescription_template WHERE tag=1
+    </select>
+
+    <select id="getPrescriptionDetail" resultType="com.neu.t1.po.PrescriptionDetail">
+        SELECT c.drug_id drugid,
+               (SELECT a.drug_name FROM tt.drug a WHERE a.drug_id=c.drug_id) drugname,
+               (SELECT b.durg_std FROM tt.drug b WHERE b.drug_id=c.drug_id) drugstd,
+               (SELECT d.fee FROM tt.drug d WHERE d.drug_id=c.drug_id) drugfee,
+               c.`usage`,
+               c.use_level uselevel,
+               freq
+               FROM tt.prescription_template_detail c WHERE  c.prescription_id=#{id} AND c.tag=1
+    </select>
+
+    <select id="getIllnessCata" resultType="com.neu.t1.po.IllnessCata">
+        SELECT `﻿illness_cata_id` cataid,illness_cata_name cataname FROM tt.illness_cata WHERE tag=1
+    </select>
+    <select id="searchIll" resultType="com.neu.t1.po.Ill">
+        SELECT illness_code illcode,illness_name illname,internation_code icdcode,`﻿illness_id` illid FROM tt.illness WHERE illness_cata_id=#{cataid} AND tag=1
+    </select>
+
+    <insert id="addFirstDiagnose">
+        INSERT INTO tt.`diagnose`( `medical_record_id`, `regist_id`, `illness_id`, `diagnose_type`, `diagnose_time`, `final_diagnose`,`tag`) VALUES
+                                 (#{diagnose.medicalrecordid}, #{diagnose.registid}, #{diagnose.illid}, #{diagnose.diagnosetype}, #{diagnose.diagnosetime}, #{diagnose.finaldiagnose},1);
+    </insert>
+    <select id="getDiagnose" resultType="com.neu.t1.po.DiagnosePO">
+        SELECT
+            (SELECT ill.illness_name FROM tt.illness ill WHERE ill.`﻿illness_id`=dia.illness_id) illname
+        FROM tt.diagnose dia WHERE dia.medical_record_id=#{medicalrecordid} AND dia.regist_id=#{registid} AND dia.tag=1
+    </select>
+    <update id="finishdiagnose" >
+        UPDATE tt.regist_msg SET diagnose_state=4 WHERE regist_id=#{registid}
+    </update>
+    <select id="findDup" resultType="Integer">
+        SELECT home.regist_id FROM tt.medical_record_homepage home WHERE home.regist_id=#{registid} and home.medical_record_id=#{medicalrecordid}
+    </select>
+    <update id="deleteFirstDiagnose">
+        UPDATE tt.diagnose SET tag=0 WHERE regist_id=#{registid} AND medical_record_id=#{medicalrecordid}
+    </update>
+    <update id="coverMedicalMainPage">
+        UPDATE tt.medical_record_homepage SET chief_complaint=#{mainPage.chiefcomplaint} ,hist_of_pres_ill=#{mainPage.histofpresill}
+        ,treat_of_pres_ill=#{mainPage.treatofpresill},past_hist=#{mainPage.pasthist},allergic_hist=#{mainPage.allergichist},phys_examination=#{mainPage.physicalexamination}
+        ,exam_suggestion=#{mainPage.examsuggestion},attention=#{mainPage.attention}
+        WHERE regist_id=#{mainPage.registid}
+        AND medical_record_id=#{mainPage.medicalrecordid}
+    </update>
+</mapper>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.t1.dao.RegistrationDao">
+    <select id="generateMedicalRecord" resultType="Integer">
+        SELECT medical_record_no FROM tt.regist_msg WHERE id_number=#{id_number} limit 0,1
+    </select>
+    <select id="getMaxMedicalRecordNum" resultType="Integer">
+        SELECT max(medical_record_no) FROM tt.regist_msg
+    </select>
+    <select id="getMaxRegNum" resultType="Integer">
+        SELECT MAX(regist_id) FROM tt.regist_msg
+    </select>
+
+    <select id="getDocList" resultType="java.util.Map">
+        SELECT user_id inde,rel_name label from tt.user where dep_no=#{depName} and reg_lev=#{regType}
+    </select>
+
+    <select id="getRegType" resultType="java.util.Map">
+        SELECT reg_level inde,reg_name label,reg_fee fee,reg_limit limi from tt.regist_lev
+    </select>
+
+    <select id="getDepMsg" resultType="java.util.Map">
+        SELECT depart_id inde,depart_name label FROM tt.department
+    </select>
+
+    <select id="getGender" resultType="java.util.Map">
+        SELECT t1.const_id inde,t1.const_name label FROM tt.const_item t1 WHERE const_cata_id=(
+          SELECT t.`﻿const_cata_id` FROM tt.const_cata t WHERE t.const_cata_name='性别类型'
+            )
+    </select>
+
+    <select id="getMedicalNum" resultType="java.util.Map">
+        SELECT DISTINCT(medical_record_no) inde FROM tt.regist_msg
+    </select>
+    <select id="getChargeType" resultType="java.util.Map">
+        SELECT t1.const_id inde,t1.const_name label FROM tt.const_item t1 WHERE t1.const_cata_id=
+                                                                                (SELECT t.`﻿const_cata_id` FROM tt.const_cata t WHERE t.const_cata_name='收费方式')
+    </select>
+
+    <select id="getPatientMsg" resultType="java.util.Map">
+        SELECT name name,gender gender,birthday birthday,id_number idNumber,address  FROM tt.regist_msg WHERE medical_record_no=#{medicalNum} LIMIT 0,1
+    </select>
+
+    <select id="getLeft" resultType="Integer">
+        SELECT COUNT(*) FROM tt.regist_msg WHERE doc_id=#{docNum} and diagnose_state=1
+    </select>
+
+    <select id="getMaxInvoice" resultType="Integer">
+        SELECT MAX(invoice_ID) FROM tt.invoice
+    </select>
+
+    <insert id="addRegistMsg">
+        INSERT INTO tt.`regist_msg` VALUES (#{returnVo.regNum},#{returnVo.medicalNum}, #{returnVo.name}, #{returnVo.gender}, #{returnVo.idNumber}, #{returnVo.birthday}, #{returnVo.age}, #{returnVo.ageType}, #{returnVo.address}, #{returnVo.date1}, #{returnVo.apm}, #{returnVo.depName}, #{returnVo.docName}, #{returnVo.regType}, #{returnVo.settlementType}, #{returnVo.medicalRecorddd}, #{returnVo.registor}, 1);
+    </insert>
+
+    <select id="getRegistMsg" resultType="com.neu.t1.po.RegistMsg">
+        SELECT regist_id registid,medical_record_no medicalrecordid,name,id_number idnumber,date,apm,
+               (SELECT de.depart_name FROM tt.department de WHERE de.depart_id=regist.dep_no) dep,
+               (CASE diagnose_state WHEN 1 THEN "已挂号" WHEN 3 THEN "已退号" WHEN 2 THEN "已看诊" WHEN 4 THEN "已诊毕" ELSE "其他" end) diagnosestate
+        FROM tt.regist_msg regist WHERE medical_record_no=#{medicalrecordid}
+    </select>
+
+    <update id="withdrawRegis">
+        UPDATE tt.regist_msg SET diagnose_state=3 WHERE regist_id=#{registid}
+    </update>
+
+    <select id="getPayType" resultType="com.neu.t1.po.PayType">
+        SELECT cit.const_id inde,cit.const_name label FROM tt.const_item cit WHERE cit.const_cata_id = (SELECT cca.`﻿const_cata_id` FROM tt.const_cata cca WHERE cca.const_cata_name="收费方式")
+    </select>
+    <select id="getPrescriptionID" resultType="Integer">
+        SELECT pre.prescription_id FROM tt.prescription pre WHERE pre.regist_id=#{settlement.registid} AND pre.medical_record_id=#{settlement.medicalrecordid}
+    </select>
+    <select id="getDrugList" resultType="com.neu.t1.po.PreFee">
+        SELECT
+               (SELECT drug.fee FROM tt.drug drug WHERE drug.drug_id =pd.drug_id) drugfee,
+               pd.num drugnum
+        FROM tt.prescription_detail pd WHERE pd.prescription_id=#{preid}
+    </select>
+
+    <update id="settlement">
+        UPDATE tt.prescription pre SET pre.status=3 WHERE pre.prescription_id=#{preid}
+    </update>
+
+    <select id="getPrescription" resultType="com.neu.t1.po.PrescriptionPO">
+        SELECT pre.prescription_id prescriptionID,pre.regist_id registID,pre.doc_id docID,
+               (SELECT u.dep_no FROM tt.user u WHERE u.user_id=pre.doc_id) departmentid
+               ,pre.medical_record_name medicalrecordname ,pre.create_time createtime FROM tt.prescription pre WHERE pre.regist_id=#{settlement.registid} AND pre.medical_record_id=#{settlement.medicalrecordid}
+    </select>
+
+    <select id="getCostDetail" resultType="com.neu.t1.po.CostDetail">
+        SELECT
+            (SELECT d.fee FROM tt.drug d WHERE d.drug_id=pd.drug_id) profee,
+               pd.num quantity
+        FROM tt.prescription_detail pd WHERE pd.prescription_id=#{prescriptionid}
+    </select>
+
+    <select id="getDocID" resultType="Integer">
+        SELECT u.user_id FROM tt.user u WHERE u.user_name=#{docid}
+    </select>
+    <insert id="addCostDetail">
+        INSERT
+        INTO tt.`cost_detail`(`reg_id`, `pro_id`, `pro_type`, `pro_name`, `pro_fee`, `quantity`, `dep_id`, `start_time`, `start_person_id`, `charg_time`, `charg_person_id`, `charg_type`)
+        VALUES
+               (#{cd.registid}, #{cd.proid}, #{cd.protype}, #{cd.proname}, #{cd.profee}, #{cd.quantity}, #{cd.depid}, #{cd.starttime}, #{cd.startPersonID},#{cd.chargtime}, #{cd.chargPersonID}, #{cd.chargType});
+    </insert>
+
+    <insert id="addInvoice">
+        INSERT INTO
+          tt.`invoice`( `invoice_num`, `invoice_fee`, `invoice_valid`, `time`, `person_id`, `regist_id`, `charge_type`, `rush_red_invoice`, `invoice_state`)
+          VALUES
+                 (#{invoicenum}, #{fee}, 1,#{createtime}, #{docid}, #{registid}, #{chargetype}, '', 0);
+
+    </insert>
+
+    <select id="getPreMsg" resultType="com.neu.t1.po.PrescriptionDetailPO">
+        SELECT pd.prescription_id prescriptionid,
+               t.regist_id registid,
+               (SELECT u.dep_no FROM tt.user u WHERE u.user_id=t.doc_id) depid,
+               t.doc_id docid,
+               (SELECT d.drug_name FROM tt.drug d WHERE d.drug_id=pd.drug_id ) drugname,
+               pd.prescription_detail_id pdi,
+               t.medical_record_id medicalrecordid,
+               t.medical_record_name proname,
+               (SELECT d.fee FROM tt.drug d WHERE d.drug_id=pd.drug_id ) fee,
+               pd.num,
+               t.create_time createtime,
+               (CASE t.status WHEN 1 THEN "已开立" WHEN 2 THEN "已作废" WHEN 3 THEN "暂存" ELSE "其他" END) status
+        FROM tt.prescription_detail pd ,
+            (SELECT * FROM tt.prescription p WHERE p.medical_record_id=#{medicalrecordid}) t
+        WHERE pd.prescription_id =t.prescription_id AND pd.status=1
+# 从未缴费的里面选
+    </select>
+    <select id="getPreMsgMedicine" resultType="com.neu.t1.po.PrescriptionDetailPO">
+        SELECT pd.prescription_id prescriptionid,
+               t.regist_id registid,
+               (SELECT u.dep_no FROM tt.user u WHERE u.user_id=t.doc_id) depid,
+               t.doc_id docid,
+               (SELECT d.drug_name FROM tt.drug d WHERE d.drug_id=pd.drug_id ) drugname,
+               pd.prescription_detail_id pdi,
+               t.medical_record_id medicalrecordid,
+               t.medical_record_name proname,
+               (SELECT d.fee FROM tt.drug d WHERE d.drug_id=pd.drug_id ) fee,
+               pd.num,
+               t.create_time createtime,
+               (CASE pd.status WHEN 1 THEN "已开立" WHEN 2 THEN "已缴费" WHEN 3 THEN "已退费" WHEN 4 THEN "已发药" ELSE "其他" END) status
+        FROM tt.prescription_detail pd ,
+             (SELECT * FROM tt.prescription p WHERE p.medical_record_id=#{medicalrecordid}) t
+        WHERE pd.prescription_id =t.prescription_id AND pd.status=2
+    </select>
+
+    <insert id="addCostDetail1">
+        INSERT
+        INTO tt.`cost_detail`(`reg_id`, `pro_id`, `pro_type`, `pro_name`, `pro_fee`, `quantity`, `dep_id`, `start_time`, `start_person_id`, `charg_time`, `charg_person_id`, `charg_type`)
+        VALUES
+        (#{cd.registid}, #{cd.pd}, #{cd.protype}, #{cd.drugname}, #{cd.fee}, #{cd.quantity}, #{cd.depid}, #{cd.starttime}, #{cd.startdocid},#{cd.chargetime}, #{cd.docname}, #{cd.paytype});
+    </insert>
+
+    <update id="changePdiStatus">
+        UPDATE tt.prescription_detail SET status=2 WHERE prescription_detail_id=#{pdi}
+    </update>
+    <select id="getInvoiceID" resultType="Integer">
+        SELECT invoice_ID FROM tt.invoice WHERE invoice_ID=#{invoiceid}
+    </select>
+    <insert id="addInvoice1">
+        INSERT INTO
+            tt.`invoice`( `invoice_num`, `invoice_fee`, `invoice_valid`, `time`, `person_id`, `regist_id`, `charge_type`, `rush_red_invoice`, `invoice_state`)
+        VALUES
+        (#{invoice.invoicenum}, #{invoice.invoicefee}, #{invoice.invoicevalid},#{invoice.time}, #{invoice.personname}, #{invoice.registid}, #{invoice.chargetype}, #{invoice.rushredinvoice}, #{invoice.invoicestate});
+    </insert>
+    <update id="distributemedicine">
+        UPDATE tt.prescription_detail SET status=4 WHERE prescription_detail_id=#{pdi}
+    </update>
+</mapper>
