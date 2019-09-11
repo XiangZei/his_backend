@@ -18,12 +18,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 挂号处理和收费的api描述
+ */
 @Controller
 @Api(tags = "registration" ,description = "挂号处理")
 @RequestMapping("/registration")
 public class Registration {
-    /*
-    1 生成病历号 generateMedicalRecord -> RegistrationDao
+    /**
+     *生成病历号 generateMedicalRecord -> RegistrationDao
      */
     @Autowired
     RegistrationService registrationService;
@@ -41,7 +44,7 @@ public class Registration {
         return CommonResult.success(docList);
     }
 
-    @ApiOperation("初始化的时候直接获取挂号类别和科室信息")
+    @ApiOperation("获取挂号类别和科室信息")
     @GetMapping("/getRequireMsg")
     @ResponseBody
     public CommonResult getRequireMsg(){
@@ -154,13 +157,14 @@ public class Registration {
         }
 
     }
-
+    @ApiOperation(value="发药")
     @PostMapping("/distributemedicine")
     @ResponseBody
     public CommonResult distributemedicine(@RequestBody JSONObject pdi){
         registrationService.distributemedicine(pdi.get("pdi").toString());
         return CommonResult.success(null);
     }
+    @ApiOperation(value="获取当前病人的所有处方明细")
     @GetMapping("/getPreMsgMedicine")
     @ResponseBody
     public CommonResult getPreMsgMedicine(@RequestParam("medicalrecordid")Integer medicalrecordid){

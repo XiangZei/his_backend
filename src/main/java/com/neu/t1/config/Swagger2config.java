@@ -14,6 +14,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * API接口可视化配置文件
+ * 配置之后可以直接在网页上访问http://localhost:8080/swagger-ui.html来调试所有的api接口方便快捷
+ */
 @Configuration
 @EnableSwagger2
 public class Swagger2config {
@@ -24,9 +28,9 @@ public class Swagger2config {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.neu.t1.controller"))
                 .paths(PathSelectors.any())
-                .build();
-//                .securitySchemes(securitySchemes());
-//                .securityContexts(securityContexts());
+                .build()
+                .securitySchemes(securitySchemes())
+                .securityContexts(securityContexts());
     }
 
     private List<ApiKey> securitySchemes() {

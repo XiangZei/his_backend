@@ -1,9 +1,8 @@
 package com.neu.t1.Service;
 
 import com.neu.t1.component.Userdetails;
-import com.neu.t1.dao.UserDao;
 import com.neu.t1.po.User;
-import com.neu.t1.util.JwtTokenUtil;
+import com.neu.t1.component.JwtTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +16,25 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+/**
+ *登录服务的实现类
+ */
 @Service("loginService")
 @Transactional
 public class LoginServiceImpl implements LoginService{
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginService.class);
+
+    /**
+     * 该类用于token的获取和解析
+     */
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    /**
+     *用户服务bean  实现用户登录登出
+     */
     @Autowired
     private UserDetailsService userDetailsService;
     @Value("${jwt.tokenHead}")

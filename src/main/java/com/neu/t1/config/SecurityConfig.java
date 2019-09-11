@@ -25,6 +25,14 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+/**
+ * 安全请求配置文件，对程序的api进行权限的控制。
+ * GET请求不做验证，全部可以访问到
+ * POST请求除了登录请求，其他的全部需要验证。
+ * 具体验证步骤由HttpSeurity类分配给JwtAuthenticationTokenFilter来进行验证
+ * 对于未验证成功的请求，使用自定义的返回结果RestAuthenticationEntryPoing和RestfulAccessDeniedHandler来进行结果返回，通知用户没有相关权限或者token过期
+ *
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -43,13 +51,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, //允许对于网站静态资源的无授权访问
-                        "/",
+
                         "/*.html",
                         "/swagger-resources/**",
                         "/admin/**",
                         "/**/**"
+
                 )
-                .permitAll().antMatchers(HttpMethod.POST,"/**/**")
+                .permitAll().antMatchers(HttpMethod.POST,"/*.html","/admin/**","/swagger-resources/**")
                 .permitAll()
                 .antMatchers(HttpMethod.OPTIONS) //跨域请求会先进行一次options请求
                 .permitAll()

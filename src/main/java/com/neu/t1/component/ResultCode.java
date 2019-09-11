@@ -1,5 +1,8 @@
 package com.neu.t1.component;
 
+/**
+ * 枚举类ResultCode  将CommonResult中要返回的状态码和消息提示进行封装
+ */
 public enum ResultCode implements IErrorCode {
     SUCCESS(200,"操作成功"),
     FAILED(500,"操作失败"),

@@ -7,8 +7,24 @@ import lombok.Data;
  */
 @Data
 public class CancelVO {
+
+    /**
+     *处方名称
+     */
     String prescriptionname;
+
+    /**
+     *挂号id
+     */
     Integer registid;
+
+    /**
+     *病历号
+     */
     Integer medicalrecordid;
+
+    /**
+     *处方状态
+     */
     Integer status;
 }

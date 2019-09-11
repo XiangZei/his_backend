@@ -17,8 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *用户登录的api的实现
+ */
 @Controller
-@Api(tags = "Login",description = "用户登陆")
+@Api(tags = "login",description = "用户登陆")
 @RequestMapping("/admin")
 public class Login {
 
@@ -63,7 +66,7 @@ public class Login {
         User u = loginService.getUserInfo(username);
         Map<String,Object> m = new HashMap<>();
         m.put("msg",new String[]{"1","2"});
-        m.put("avatar","ksdfjksjf");
+        m.put("avatar","未设置头像");
         return  CommonResult.success(m);
     }
 

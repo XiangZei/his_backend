@@ -7,12 +7,14 @@ import org.apache.ibatis.jdbc.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+/**
+ * 诊断服务的实现类，具体方法的注解在接口类中
+ */
 @Service("diagnoseService")
 @Transactional
 public class DiagnoseServiceImpl implements DiagnoseService {

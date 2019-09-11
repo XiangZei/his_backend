@@ -7,6 +7,10 @@ import java.io.Serializable;
 
 @Data
 public class User implements Serializable {
+
+    /**
+     *用户id
+     */
     private Integer userId;
     @ApiModelProperty(value = "用户名")
     private String userName;
