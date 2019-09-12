@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 诊断服务的实现类，具体方法的注解在接口类中
@@ -18,6 +16,7 @@ import java.util.Map;
 @Service("diagnoseService")
 @Transactional
 public class DiagnoseServiceImpl implements DiagnoseService {
+    Set<Integer> set = new HashSet<>();
     @Autowired
     DiagnoseDao diagnoseDao;
     @Override
@@ -36,17 +35,23 @@ public class DiagnoseServiceImpl implements DiagnoseService {
     }
 
     @Override
-    public Integer addPrescription(Prescription prescription) {
-        Integer prescriptionid = diagnoseDao.getMaxPrescriptionID();
-
-        System.out.println("最大的处方id为"+prescriptionid);
+    public synchronized Integer addPrescription(Prescription prescription) {
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         prescription.setCreatetime(sdf.format(date));
-        prescription.setPrescriptionid(prescriptionid);
         Integer docid = diagnoseDao.getDocID(prescription.getDocid());
         prescription.setDoc(docid);
+
+        Integer prescriptionid = diagnoseDao.getMaxPrescriptionID();
+        while(set.contains(prescriptionid)){
+            prescriptionid++;
+        }
+        set.add(prescriptionid);
+
+        prescription.setPrescriptionid(prescriptionid);
+
         diagnoseDao.addPrescription(prescription);
+        System.out.println("最大的处方id为"+prescriptionid);
         return prescriptionid;
 
     }

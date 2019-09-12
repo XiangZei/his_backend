@@ -174,4 +174,6 @@ public interface RegistrationDao {
      *获取制定病历号未缴费的处方明细
      */
     List<PrescriptionDetailPO> getPreMsgMedicine(@Param("medicalrecordid") Integer medicalrecordid);
+
+
 }

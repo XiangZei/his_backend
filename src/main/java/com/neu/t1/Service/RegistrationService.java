@@ -86,4 +86,6 @@ public interface RegistrationService {
      * 获取处方明细
      */
     List<PrescriptionDetailPO> getPreMsgMedicine(Integer medicalrecordid);
+
+
 }

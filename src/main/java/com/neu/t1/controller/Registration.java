@@ -171,4 +171,5 @@ public class Registration {
         List<PrescriptionDetailPO> list = registrationService.getPreMsgMedicine(medicalrecordid);
         return CommonResult.success(list);
     }
+
 }

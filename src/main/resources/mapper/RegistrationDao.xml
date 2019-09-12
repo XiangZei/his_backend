@@ -170,4 +170,5 @@
     <update id="distributemedicine">
         UPDATE tt.prescription_detail SET status=4 WHERE prescription_detail_id=#{pdi}
     </update>
+
 </mapper>

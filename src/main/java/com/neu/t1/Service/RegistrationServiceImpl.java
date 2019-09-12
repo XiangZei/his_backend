@@ -204,4 +204,6 @@ public class RegistrationServiceImpl implements RegistrationService{
         List<PrescriptionDetailPO> list = registrationDao.getPreMsgMedicine(medicalrecordid);
         return list;
     }
+
+
 }
