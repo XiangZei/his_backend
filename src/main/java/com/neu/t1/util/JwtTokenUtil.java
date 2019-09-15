@@ -1,4 +1,4 @@
-package com.neu.t1.component;
+package com.neu.t1.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

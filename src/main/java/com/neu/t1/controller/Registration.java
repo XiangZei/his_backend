@@ -1,12 +1,10 @@
 package com.neu.t1.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.neu.t1.Service.RegistrationService;
-import com.neu.t1.component.CommonResult;
+import com.neu.t1.util.CommonResult;
 import com.neu.t1.po.PayType;
 import com.neu.t1.po.PrescriptionDetailPO;
-import com.neu.t1.po.PrescriptionPO;
 import com.neu.t1.po.RegistMsg;
 import com.neu.t1.vo.*;
 import io.swagger.annotations.Api;

@@ -1,7 +1,7 @@
 package com.neu.t1.controller;
 
 import com.neu.t1.Service.LoginService;
-import com.neu.t1.component.CommonResult;
+import com.neu.t1.util.CommonResult;
 import com.neu.t1.po.User;
 import com.neu.t1.vo.UserInfo;
 import io.swagger.annotations.Api;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.filter.CorsFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +33,9 @@ public class Login {
     @RequestMapping(value = "/login",method= RequestMethod.POST)
     @ResponseBody
     public CommonResult login(@RequestBody UserInfo userInfo){
+        if(userInfo.getType()==null){
+            return CommonResult.failed("请选择用户类型");
+        }
         String token = loginService.login(userInfo.getUsername(),userInfo.getPassword(),userInfo.getType());
         if(token==null){
             return CommonResult.validateFailed("用户名或密码错误");
@@ -49,6 +51,9 @@ public class Login {
     @ResponseBody
     public CommonResult refreshToken(HttpServletRequest request){
         String token = request.getHeader(tokenHead);
+        if(token==null){
+            return CommonResult.failed();
+        }
         String refreshToken = loginService.refreshToken(token);
         if(refreshToken==null){
             return CommonResult.failed();

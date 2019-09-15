@@ -1,6 +1,7 @@
-package com.neu.t1.component;
+package com.neu.t1.filter;
 
 import cn.hutool.json.JSONUtil;
+import com.neu.t1.util.CommonResult;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;

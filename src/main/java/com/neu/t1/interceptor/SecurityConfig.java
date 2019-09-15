@@ -1,7 +1,11 @@
-package com.neu.t1.config;
+package com.neu.t1.interceptor;
 
 import com.neu.t1.Service.UserService;
-import com.neu.t1.component.*;
+import com.neu.t1.filter.ReferFilter;
+import com.neu.t1.util.*;
+import com.neu.t1.filter.JwtAuthenticationTokenFilter;
+import com.neu.t1.filter.RestAuthenticationEntryPoint;
+import com.neu.t1.filter.RestfulAccessDeniedHandler;
 import com.neu.t1.po.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -15,7 +19,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,7 +29,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 /**
- * 安全请求配置文件，对程序的api进行权限的控制。
+ * 拦截器
+ * 对程序的api进行权限的控制。
  * GET请求不做验证，全部可以访问到
  * POST请求除了登录请求，其他的全部需要验证。
  * 具体验证步骤由HttpSeurity类分配给JwtAuthenticationTokenFilter来进行验证
@@ -50,19 +54,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                //屏蔽所有静态请求
                 .antMatchers(HttpMethod.GET, //允许对于网站静态资源的无授权访问
-
                         "/*.html",
+                        "/favicon.ico",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js",
                         "/swagger-resources/**",
-                        "/admin/**",
+                        "/v2/api-docs/**",
                         "/**/**"
 
                 )
+                //只提供post 的登录接口
                 .permitAll().antMatchers(HttpMethod.POST,"/*.html","/admin/**","/swagger-resources/**")
                 .permitAll()
                 .antMatchers(HttpMethod.OPTIONS) //跨域请求会先进行一次options请求
-                .permitAll()
-                .antMatchers("/admin/login")
                 .permitAll()
                 .anyRequest()//除了上面请求全部需要鉴权认证
                 .authenticated();
@@ -71,6 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //添加JWTfilter
         http.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         //添加自定义未授权和未登录结果返回
+        http.addFilter(new ReferFilter());
         http.exceptionHandling()
                 .accessDeniedHandler(restfulAccessDeniedHandler)
                 .authenticationEntryPoint(restAuthenticationEntryPoint);

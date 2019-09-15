@@ -1,4 +1,4 @@
-package com.neu.t1.component;
+package com.neu.t1.util;
 
 /**
  * 枚举类ResultCode  将CommonResult中要返回的状态码和消息提示进行封装

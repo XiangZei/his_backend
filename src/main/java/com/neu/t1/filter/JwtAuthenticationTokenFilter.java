@@ -1,5 +1,7 @@
-package com.neu.t1.component;
+package com.neu.t1.filter;
 
+import com.neu.t1.util.JwtTokenUtil;
+import com.neu.t1.util.Userdetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,9 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException{
+
         String authHeader = request.getHeader(this.tokenHeader);
+
         if(authHeader!=null&&authHeader.startsWith(this.tokenHead)){
             String authToken = authHeader.substring(this.tokenHead.length()); //获取token
             String username = jwtTokenUtil.getUserNameFromToken(authToken); // 利用算法将用户名从token中取出来

@@ -1,4 +1,4 @@
-package com.neu.t1.component;
+package com.neu.t1.util;
 /**
  * 自定义返回的结果
  * CommonResult由三部分构成：

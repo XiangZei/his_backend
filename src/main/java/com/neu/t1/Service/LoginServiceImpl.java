@@ -1,8 +1,8 @@
 package com.neu.t1.Service;
 
-import com.neu.t1.component.Userdetails;
+import com.neu.t1.util.Userdetails;
 import com.neu.t1.po.User;
-import com.neu.t1.component.JwtTokenUtil;
+import com.neu.t1.util.JwtTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

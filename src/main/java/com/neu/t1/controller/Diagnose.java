@@ -2,7 +2,7 @@ package com.neu.t1.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.neu.t1.Service.DiagnoseService;
-import com.neu.t1.component.CommonResult;
+import com.neu.t1.util.CommonResult;
 import com.neu.t1.po.*;
 import com.neu.t1.vo.*;
 import io.swagger.annotations.Api;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

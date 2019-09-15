@@ -1,4 +1,4 @@
-package com.neu.t1.component;
+package com.neu.t1.util;
 
 import com.neu.t1.po.User;
 import org.springframework.security.core.GrantedAuthority;

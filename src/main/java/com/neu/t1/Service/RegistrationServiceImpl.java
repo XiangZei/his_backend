@@ -20,7 +20,7 @@ public class RegistrationServiceImpl implements RegistrationService{
     @Autowired
     RegistrationDao registrationDao;
     /*
-    通过用户输入的挂号信息进行病历号和挂号的提取的确定
+    通过用户输入的挂号信息进行病历号和挂号的提取和确定
      */
     @Override
     public Map<String, Object> registrate(RegReturnVo regReturnVo) {

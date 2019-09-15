@@ -1,4 +1,4 @@
-package com.neu.t1.component;
+package com.neu.t1.util;
 /**
  * 将返回码(ResultCode)中的方法进行封装
  *
