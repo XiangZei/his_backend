@@ -1,6 +1,6 @@
 package com.neu.t1.interceptor;
 
-import com.neu.t1.Service.UserService;
+import com.neu.t1.Service.LoginService;
 import com.neu.t1.filter.ReferFilter;
 import com.neu.t1.util.*;
 import com.neu.t1.filter.JwtAuthenticationTokenFilter;
@@ -42,7 +42,7 @@ import org.springframework.web.filter.CorsFilter;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    UserService userService;
+    LoginService loginService;
     @Autowired
     private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
     @Autowired
@@ -101,7 +101,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService(){
         //获取登录用户信息
        return username->{
-           User user =userService.getByUsername(username);
+           User user = loginService.getByUsername(username);
            if(user!=null){
                return new Userdetails(user);
            }

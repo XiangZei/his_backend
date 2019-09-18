@@ -1,5 +1,6 @@
 package com.neu.t1.Service;
 
+import com.neu.t1.dao.UserDao;
 import com.neu.t1.util.Userdetails;
 import com.neu.t1.po.User;
 import com.neu.t1.util.JwtTokenUtil;
@@ -23,7 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class LoginServiceImpl implements LoginService{
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginService.class);
-
+    @Autowired
+    UserDao userDao;
     /**
      * 该类用于token的获取和解析
      */
@@ -73,6 +75,10 @@ public class LoginServiceImpl implements LoginService{
             return jwtTokenUtil.refreshToken(newtoken);
         }
         return null;
+    }
+    public User getByUsername(String username){
+        User user =userDao.getByUsername(username);
+        return user;
     }
 
     @Override

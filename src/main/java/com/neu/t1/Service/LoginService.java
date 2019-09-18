@@ -6,7 +6,7 @@ import com.neu.t1.po.User;
  *登录服务类
  */
 public interface LoginService {
-
+    User getByUsername(String username);
     /**
      *登录
      */
