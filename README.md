@@ -22,7 +22,7 @@ web课程设计 东软云后端
 
 
 
-![ER图](images\ER图.png)
+![ER图](images/ER图.png)
 
 ### 类和对象详细设计
 
