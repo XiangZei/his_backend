@@ -43,33 +43,39 @@ web课程设计 东软云后端
 
 PO类使用从数据库中取出的数据进行实例化，对应数据表字段。例如缴费明细类
 
+```java
 @Data
- **public class** CostDetail {
-   Integer **registid**;*//**挂号id
-\*   Integer **proid**;*//**项目id
-\*   Integer **protype**;*//**后期可以根据处方中的医生进行获取
-\*   String **proname**;*//**项目名称
-\*   **double profee**;*//**项目费用
-\*   Integer **quantity**;*//**数量
-\*   Integer **depid**;*//**科室id
-\*   String **starttime**;*//**开立时间
-\*   Integer **startPersonID**;*//**开立人员id
-\*   String **chargtime**;*//**收费时间
-\*   Integer **chargPersonID**;*//**从settlementvo**中获取，收费人员id
-\*   Integer **chargType**;*//**从外面传进来
-\* }
+public class CostDetail {
+    Integer registid;//挂号id
+    Integer proid;//项目id
+    Integer protype;//后期可以根据处方中的医生进行获取
+    String proname;//项目名称
+    double profee;//项目费用
+    Integer quantity;//数量
+    Integer depid;//科室id
+    String starttime;//开立时间
+    Integer startPersonID;//开立人员id
+    String chargtime;//收费时间
+    Integer chargPersonID;//从settlementvo中获取，收费人员id
+    Integer chargType;//从外面传进来
+}
+```
+
+
 
  
 
 VO是用前端传来的数据进行实例化封装，对应前端json中的字段。例如从前端传来的诊断信息
 
+```java
 @Data
- **public class** DiagnoseVO {
-   Integer **illid**;*//**疾病id
-\*   Integer **diagnosetype**;*//**诊断类型
-\*   Integer **finaldiagnose**;*//**确诊号（1* *待诊 2* *已诊 3* *诊毕）
-\*   Integer **medicalrecordid**;*//**病历号
-\*   Integer **registid**;*//**挂号id
-\*   String **diagnosetime**;*//**诊断时间
-\* }
+public class DiagnoseVO {
+    Integer illid;//疾病id
+    Integer diagnosetype;//诊断类型
+    Integer finaldiagnose;//确诊号（1 待诊 2 已诊 3 诊毕）
+    Integer medicalrecordid;//病历号
+    Integer registid;//挂号id
+    String diagnosetime;//诊断时间
+}
+```
 
